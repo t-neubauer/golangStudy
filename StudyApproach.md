@@ -29,3 +29,23 @@ I dont want to use genAI to create a full project for me as this would affect my
   - Generics *(Another familiar concept from C#)*
   - Concurrency *(excited for this one)*
 - Check "Go by example": 0/85 *(Depending on demand; Use additionally to documentation)*
+
+
+## A Tour of Go
+
+### Topics
+An overview of topics can be seen in Topics.md
+
+### Packages
+- Programs start running in package main 
+- Package name is the same as the last element of the import parth, e.g. `import "math/rand"`
+- factored import statement
+```golang
+import (
+
+)
+```
+- Exported names start with a capital letter. Only exported names can be referred to when importing a package. *(Ähnlich wie public access modifier in C#)* 
+
+### Syntax 
+For go syntax read Syntax.md
