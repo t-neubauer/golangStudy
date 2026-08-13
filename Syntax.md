@@ -185,4 +185,39 @@ cap(a) // capacity of slice a. Number of elements in underlying array counting f
 s := []int{2, 3, 5, 7, 11, 13}
 s = s[:4]
 s = s[2:]
+
+// make is a builtin function to create dynamically sized arrays
+
+b := make([]int, 0, 5) // len(b)=0, cap(b)=5
+b = b[:cap(b)] // len(b)=5, cap(b)=5
+b = b[1:]      // len(b)=4, cap(b)=4
+
+// slice in slice
+
+// Create a tic-tac-toe board.
+	board := [][]string{
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+	}
+
+// append to a slice (builtin function)
+
+func append ( s []T, vs ...T) []T // if backing array of s is too small, bigger array will be allocated.
+var s []int
+s = append (s, 2, 3, 4)
+
+// range
+// iterates over slice or map. Two elements returned. 1st index. 2nd copy of the element at that index
+var pow = []int{1, 2, 3, 4, 8, 16, 32}
+for i,v := range pow{
+}
+
+//skip index or value by assigning `_`. omit value if you only want the index.
+for i, _ := range pow
+for _, v := range pow
+for i := range pow
+
+
+
 ```
