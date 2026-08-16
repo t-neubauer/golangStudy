@@ -221,3 +221,149 @@ for i := range pow
 
 
 ```
+
+### Maps
+
+maps keys to values *C# Dictionary*
+
+zero value is `nil`. 
+make function returns map of given type, initialized and ready to use
+
+Example:
+```golang
+type Vertex struct {
+  Lat, Long float64
+}
+
+var m map[string]Vertex
+
+func main() {
+  m = make(map[string]Vertex)
+  m["Bell Labs"] = Vertex {
+    40.68322, -74.39967,
+  }
+  fmt.Println(m["Bell Labs"])
+}
+```
+
+
+Map Literals, like struct literals, but Key is required.
+
+```golang 
+var m = map[string]Vertex{
+  "Bell Labs": Vertex {
+    40.68433, -74.39976,
+  },
+  "Google": Vertex{
+    37.42202, -122.08408,
+  },
+}
+
+// if top level type is just a type name, you can omit it from the elements of the literal
+var m = map[string]Vertex{
+  "Bell Labs":  { 40.68433, -74.39976 } , 
+  "Google": { 37.42202, -122.08408 } ,
+}
+```
+
+#### Mutating Maps
+```golang
+// insert or update element in map m
+m[key] = elem
+// retrieve an element
+elem = m[key]
+//delete an element
+delete(m, key)
+// test that a key is present with a two-value assignment
+elem, ok = m[key] // if key is in m, ok is true, else it is false. If key is not in the map, elem is the zero value for the maps element type.
+// IF elem or ok have not yet been declared, you can use the short declaration form
+elem, ok := m[key]
+// Example:
+m := make(m[string]int)
+m["Answer"] = 42
+delete(m, "Answer")
+value, ok := m["Answer"] //value = 0; ok = false
+
+```
+
+### Functions as values
+
+function values may be used as function arguments and return values.
+
+```golang
+func compute (fn func(float64, float64) float64) float64
+{
+  return fn(3,4)
+}
+func main(){
+  hypot := func(x,y float64) float64{
+    return math.Sqrt(x*x + y*y)
+  }
+  fmt.Println(compute(hypot))
+}
+```
+
+### Function Closures
+
+A closure is a function value that references variables from outside its body. 
+
+```golang 
+func adder () func(int) int {
+  sum:= 0
+  return func(x int) int {
+    sum += x
+    return sum
+  }
+}
+
+func main() {
+  pos, neg := adder(), adder()
+  for i:=0; i<10; i++{
+    fmt.Println(
+      pos(i),
+      neg (-2*i),
+    )
+  }>
+}
+```
+
+### Methods
+
+Methods can be defined on types.
+Methods have a special receiver argument.
+```golang 
+v:=Vertex{1,2}
+func (v Vertex) Abs() floa64 { // Abs method has a receiver of type Vertex
+
+}
+v.Abs()
+
+// normal function
+func Abs(v Vertex) float64 {...}
+v:= Vertex {3,4}
+Abs(v)
+
+// Methods can be declared on non-struct types too.
+// Only declare a method with a reveicer whose type is defined in the same package as the method.
+type MyFloat float64
+
+func (f MyFloat) Abs() float64
+  if f < 0{
+    return float 64(-f)
+  }
+  return float64(f)
+
+// Pointer Receivers
+// receiver type then has the literal syntax *T for a type T. T cannot itself be a pointer such as *int
+// Methods with pointer receivers can modify the value to which the receiver points.
+// pointer receivers are more common than value receivers.
+
+func (v *Vertex) Scale(f float64) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+v := Vertex {3,4}
+v.Scale(10)
+
+```
+
