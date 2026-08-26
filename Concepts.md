@@ -19,4 +19,22 @@ Each concept entry should include:
 
 ## Concepts Log
 
+### `panic`
+
+- Summary: Stops normal execution and begins stack unwinding when Go encounters an unrecoverable condition. Use `error` values for expected failures; use `recover()` inside a deferred function only when a panic must be handled.
+- Go Example:
+    ```go
+    func safeOperation() {
+            defer func() {
+                    if recovered := recover(); recovered != nil {
+                            fmt.Println("recovered:", recovered)
+                    }
+            }()
+
+            panic("unexpected failure")
+    }
+    ```
+- C#/.NET Comparison: Similar to throwing an exception and handling it with `catch`, but Go normally returns explicit `error` values for expected failures. Go recovery uses `defer` and `recover()` and must happen in the same goroutine.
+- Kubernetes/Edge Relevance: A startup panic can terminate a container so Kubernetes can restart it, while request-level or operational failures should usually be returned as errors so the service remains available.
+
 

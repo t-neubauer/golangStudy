@@ -349,7 +349,7 @@ type MyFloat float64
 
 func (f MyFloat) Abs() float64
   if f < 0{
-    return float 64(-f)
+    return float64(-f)
   }
   return float64(f)
 
@@ -365,5 +365,120 @@ func (v *Vertex) Scale(f float64) {
 v := Vertex {3,4}
 v.Scale(10)
 
-```
 
+// Pointer Indirection
+// functions with pointer argument must take a pointer
+func ScaleFunc(v *Vertex, f float){...}
+ScaleFunc(v,5) // doesnt compile
+ScaleFunc(&v,5) //OK
+// methods with pointer receiver take either a value or a pointer.
+// in case of a value, the method with the pointer receiver is indirectly called automatically. 
+var v Vertex
+v.Scale(5) // OK, because its interpreted as (&v).Scale(5) because Scale has a pointer receiver.
+p:= &v
+p.Scale(10) //OK
+// Same for value arguments. Functions that take value arguments must take a value of that type while methods with value receivers take either a value or a pointer as the receiver when they are called.
+var v Vertex 
+fmt.Println(AbsFunc(v)) // OK
+fmt.Println(AbsFunc(&v)) // compile error
+var v Vertex 
+fmt.Println(v.Abs()) // OK
+p:= &v
+fmt.Println(p.Abs()) // OK
+
+// Two Reasons to use a pointer receiver
+// 1) so the method can modify the value that its receiver points to
+// 2) to avoid copying the value on each method call. More efficient for large structs for example. 
+
+
+// all methods on a given type should have either value or pointer receivers but not a mixture of both. 
+
+```
+### Interfaces
+
+```golang
+// set of method signatures
+// value of interface type can hold any value that implements those methods
+
+type Abser interface {
+  Abs() float64
+}
+
+func main() {
+ var a Abser
+ f := MyFloat(-math.Sqrt2)
+ v := Vertex{3, 4}
+ a = f // a MyFloat implements Abser
+ a = &v // a *Vertex implements Abser
+ a = v // v is a Vertex, not *Vertex and does NOT implement abser
+}
+
+type MyFloat float64
+func (f MyFloat) Abs() float64 {...}
+type Vertex struct { X,Y float64}
+func (v *Vertex) Abs() float64 {...}
+
+// interfaces are implemented implicitly. There is no explicit `implements` declaration
+// decouples definition of an interface from its implementation which can then appear in any package without prearrangement.
+
+// Interface value
+// interfaces values can be thought of as a tuple of a value and a concrete type
+(value, type)
+// interface holds a value of a specific underlying concrete type.
+// Calling a method on an interface value executes the method of the same name on its underlying type.
+
+// Interface values with nil underlying values
+// if value within interface itself is nil, method will be called with a nil receiver.
+// In other languages: NullPointerException
+// Go: Common to write methods that gracefully handle being called with a nil receiver.
+// Note: interface value that hold a nil concrete value is itself not nil
+
+type I interface {
+  M()
+}
+
+type T struct { S string }
+func (t *T) M() {
+  // handle nil gracefully
+  if t == nil {
+    fmt.Println("<nil>")
+    return
+  }
+  fmt.Println(t.S)
+}
+
+// Nil interface values
+// holds neither value nor concrete type.
+// Calling method on a nil interface creates a runtime error (because there is no type inside the interface tuple to indicate which concrete method to call)
+
+// Empty interface
+// interface that specifies zero methods
+// may hold values of any type. (Cause any type implements at least zero methods)
+// "any" is an equivalent to interface{}
+// used by code that handles values of unknown type.
+var i interface{}
+var i any
+
+// Type assertions
+// provide access to an interface value's underlying concrete value
+t:= i.(T) // asserts that interface value i holds concrete type T and assigns the underlying T value to variable t
+// if i does not hold T the statement will trigger a panic. see Concepts.md
+// testing wether an interface value holds a specific type. The type assertion can return two values. The underlying value and a boolean.
+t, ok := i.(T) //note similarity of reading from a map.
+
+// Type switches
+// construct that permits serveral type assertions in series
+switch v:= i.(type) {
+  case T: // here v has type T
+  case S: // here v has type S
+  default: // no match. type is the same as i
+}
+
+// Stringers
+// type that can describe itself as a string. 
+type Stringer interface {
+  String() string
+}
+
+// Errors
+```
