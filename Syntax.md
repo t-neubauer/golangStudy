@@ -479,6 +479,23 @@ switch v:= i.(type) {
 type Stringer interface {
   String() string
 }
+```
 
-// Errors
+### Errors
+
+error type is a built-in interfaces.
+Functions often return an `error` value and calling code should handle errors by testing wether the error equals `nil`.
+`nil` means success, non-nil means error.
+```golang
+type error interface {
+  Error() string
+}
+
+i, err := strconv.Atoi("42")
+if err != nil {
+  fmt.Printf("couldnt convert number: %v\n", err)
+  return
+}
+fmt.Println("Converted integrer:", i)
+
 ```
