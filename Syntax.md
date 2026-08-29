@@ -499,3 +499,60 @@ if err != nil {
 fmt.Println("Converted integrer:", i)
 
 ```
+
+Example:
+```golang
+type ErrNegativeSqrt float64
+
+func (e ErrNegativeSqrt) Error() string{
+  return fmt.Sprintf("Cannot Sqrt negative number: %v", float64(e))
+}
+func Sqrt(x float64) (float64,error){
+  if x < 0 {
+    return 0, ErrNegativeSqrt(x)
+  }
+  return mathf.Sqrt(x),nil
+}
+```
+
+### Readers
+
+io package specifies io.Reader interface. Represents read end of a stream of data
+
+Go standard lib has many implementations for files, network connections, compressors, ciphers etc.
+
+io.Reader has a Read method.
+`func (T) Read(b []byte) (n int, err error)`
+
+Read populates given byte slice with data and returns number of bytes populated and an error value. Returns io.EOF when the stream ends.
+
+Example for a strings.Reader that consumes its output 8 bytes at a time.
+```golang
+func main() {
+  r := strings.NewReader("Hello, Reader!")
+
+  b := make([]byte, 8)
+  for {
+    n, err := r.Read(b)
+    fmt.Printf("n = %v err = %v b =%v\n", n, err, b)
+    fmt.Printf("b[:n] = %q\n", b[:n])
+    if err == io.EOF {
+      break
+    }
+  }
+}
+```
+A Common pattern is an io.Reader that wraps another io.Reader, modifying the stream in some way.
+
+### Images
+
+Package image defines `Image` interface
+
+
+### Type parameters
+
+Functions can be written to work on multiple types using type parameters. 
+
+`func Index[T comparable](s []T, x T) int`
+
+`comparable` is a constraint that makes it possible to use `==` and `!=`operators on values of the type. 
